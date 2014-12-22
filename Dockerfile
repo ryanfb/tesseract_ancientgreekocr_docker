@@ -13,6 +13,17 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+# Set debug and google-perftools compile options.
+# Could use -pg instead, but this is mutually exclusive to google-perftools, and you'll get the message:
+#   Disabling profiler because SIGPROF handler is already in use.
+# When you try to run with the CPUPROFILE environment variable.
+# Note that you also need LD_PRELOAD=/usr/lib/libtcmalloc.so:/usr/lib/libprofiler.so
+RUN apt-get install -y google-perftools libgoogle-perftools4 libgoogle-perftools-dev
+ENV CFLAGS -g
+ENV CPPFLAGS -g
+ENV CXXFLAGS -g
+ENV LDFLAGS -ltcmalloc -lprofiler
+
 # More environment variables.
 ENV LD_LIBRARY_PATH /usr/local/lib
 WORKDIR /home
@@ -38,4 +49,4 @@ RUN cp -v ancientgreekocr-grctraining/training_text.txt ancientgreekocr-grctrain
 RUN wget https://tesseract-ocr.googlecode.com/files/tesseract-ocr-3.02.eng.tar.gz
 RUN tar xzvf tesseract-ocr-3.02.eng.tar.gz
 RUN cp tesseract-ocr/tessdata/eng.traineddata /usr/local/share/tessdata/
-RUN cd ancientgreekocr-grc; make
+# RUN cd ancientgreekocr-grc; make
